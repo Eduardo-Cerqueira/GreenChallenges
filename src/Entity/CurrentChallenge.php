@@ -17,9 +17,6 @@ class CurrentChallenge
     private ?string $user_id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $challenge_id = null;
-
-    #[ORM\Column(length: 255)]
     private ?string $status = null;
     
     #[ORM\Column]
@@ -31,6 +28,11 @@ class CurrentChallenge
     #[ORM\ManyToOne(inversedBy: 'uuid')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user_uuid = null;
+    
+    #[ORM\ManyToOne(inversedBy: 'currentChallenges')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Challenge $challenge_id = null;
+
 
 
     public function getId(): ?int
@@ -46,18 +48,6 @@ class CurrentChallenge
     public function setUserId(string $user_id): static
     {
         $this->user_id = $user_id;
-
-        return $this;
-    }
-
-    public function getChallengeId(): ?string
-    {
-        return $this->challenge_id;
-    }
-
-    public function setChallengeId(string $challenge_id): static
-    {
-        $this->challenge_id = $challenge_id;
 
         return $this;
     }
@@ -106,6 +96,18 @@ class CurrentChallenge
     public function setUserUuid(?User $user_uuid): static
     {
         $this->user_uuid = $user_uuid;
+
+        return $this;
+    }
+
+    public function getChallengeId(): ?Challenge
+    {
+        return $this->challenge_id;
+    }
+
+    public function setChallengeId(?Challenge $challenge_id): static
+    {
+        $this->challenge_id = $challenge_id;
 
         return $this;
     }

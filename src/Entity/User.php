@@ -47,7 +47,7 @@ class User
     #[ORM\OneToMany(mappedBy: 'created_by', targetEntity: Challenge::class)]
     private Collection $challenges;
 
-    #[ORM\OneToMany(mappedBy: 'user_uuid', targetEntity: CurrentChallenge::class)]
+    #[ORM\OneToMany(mappedBy: 'user_id', targetEntity: CurrentChallenge::class)]
     private Collection $uuid;
 
     public function __construct()

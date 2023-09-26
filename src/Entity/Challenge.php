@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ChallengeRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -44,6 +46,14 @@ class Challenge
 
     #[ORM\ManyToOne(inversedBy: 'challenges')]
     private ?User $created_by = null;
+
+    #[ORM\OneToMany(mappedBy: 'challenge_id', targetEntity: CurrentChallenge::class)]
+    private Collection $currentChallenges;
+
+    public function __construct()
+    {
+        $this->currentChallenges = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -167,6 +177,36 @@ class Challenge
     public function setCreatedBy(?User $created_by): static
     {
         $this->created_by = $created_by;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CurrentChallenge>
+     */
+    public function getCurrentChallenges(): Collection
+    {
+        return $this->currentChallenges;
+    }
+
+    public function addCurrentChallenge(CurrentChallenge $currentChallenge): static
+    {
+        if (!$this->currentChallenges->contains($currentChallenge)) {
+            $this->currentChallenges->add($currentChallenge);
+            $currentChallenge->setChallengeId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCurrentChallenge(CurrentChallenge $currentChallenge): static
+    {
+        if ($this->currentChallenges->removeElement($currentChallenge)) {
+            // set the owning side to null (unless already changed)
+            if ($currentChallenge->getChallengeId() === $this) {
+                $currentChallenge->setChallengeId(null);
+            }
+        }
 
         return $this;
     }
