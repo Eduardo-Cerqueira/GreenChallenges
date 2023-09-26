@@ -38,11 +38,12 @@ class Challenge
     #[ORM\Column(type: Types::TIME_MUTABLE)]
     private ?\DateTimeInterface $duration = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $created_by = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
+
+    #[ORM\ManyToOne(inversedBy: 'challenges')]
+    private ?User $created_by = null;
 
     public function getId(): ?int
     {
@@ -145,17 +146,6 @@ class Challenge
         return $this;
     }
 
-    public function getCreatedBy(): ?string
-    {
-        return $this->created_by;
-    }
-
-    public function setCreatedBy(string $created_by): static
-    {
-        $this->created_by = $created_by;
-
-        return $this;
-    }
 
     public function getCreatedAt(): ?\DateTimeImmutable
     {
@@ -165,6 +155,18 @@ class Challenge
     public function setCreatedAt(\DateTimeImmutable $created_at): static
     {
         $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    public function getCreatedBy(): ?User
+    {
+        return $this->created_by;
+    }
+
+    public function setCreatedBy(?User $created_by): static
+    {
+        $this->created_by = $created_by;
 
         return $this;
     }
