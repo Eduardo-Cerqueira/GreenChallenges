@@ -28,6 +28,9 @@ class CurrentChallenge
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
 
+    #[ORM\ManyToOne(inversedBy: 'uuid')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user_uuid = null;
 
 
     public function getId(): ?int
@@ -91,6 +94,18 @@ class CurrentChallenge
     public function setPoints(int $points): static
     {
         $this->points = $points;
+
+        return $this;
+    }
+
+    public function getUserUuid(): ?User
+    {
+        return $this->user_uuid;
+    }
+
+    public function setUserUuid(?User $user_uuid): static
+    {
+        $this->user_uuid = $user_uuid;
 
         return $this;
     }

@@ -17,9 +17,6 @@ class User
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::GUID, unique: true)]
-    private ?string $uuid = null;
-
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
@@ -50,9 +47,13 @@ class User
     #[ORM\OneToMany(mappedBy: 'created_by', targetEntity: Challenge::class)]
     private Collection $challenges;
 
+    #[ORM\OneToMany(mappedBy: 'user_uuid', targetEntity: CurrentChallenge::class)]
+    private Collection $uuid;
+
     public function __construct()
     {
         $this->challenges = new ArrayCollection();
+        $this->uuid = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -204,6 +205,28 @@ class User
             // set the owning side to null (unless already changed)
             if ($challenge->getCreatedBy() === $this) {
                 $challenge->setCreatedBy(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function addUuid(CurrentChallenge $uuid): static
+    {
+        if (!$this->uuid->contains($uuid)) {
+            $this->uuid->add($uuid);
+            $uuid->setUserUuid($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUuid(CurrentChallenge $uuid): static
+    {
+        if ($this->uuid->removeElement($uuid)) {
+            // set the owning side to null (unless already changed)
+            if ($uuid->getUserUuid() === $this) {
+                $uuid->setUserUuid(null);
             }
         }
 
