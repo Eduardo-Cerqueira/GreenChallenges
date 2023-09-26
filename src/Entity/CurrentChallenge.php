@@ -21,12 +21,14 @@ class CurrentChallenge
 
     #[ORM\Column(length: 255)]
     private ?string $status = null;
+    
+    #[ORM\Column]
+    private ?int $points = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
 
-    #[ORM\Column]
-    private ?int $points = null;
+
 
     public function getId(): ?int
     {
