@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -14,9 +16,6 @@ class User
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-
-    #[ORM\Column(type: Types::GUID)]
-    private ?string $uuid = null;
 
     #[ORM\Column(length: 255)]
     private ?string $name = null;
@@ -36,14 +35,26 @@ class User
     #[ORM\Column(length: 255)]
     private ?string $country = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, options: ["default" => "user"])]
     private ?string $role = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $last_connection = null;
 
-    #[ORM\Column]
+    #[ORM\Column(options: ["default" => "CURRENT_TIMESTAMP"], updatable: false)]
     private ?\DateTimeImmutable $created_at = null;
+
+    #[ORM\OneToMany(mappedBy: 'created_by', targetEntity: Challenge::class)]
+    private Collection $challenges;
+
+    #[ORM\OneToMany(mappedBy: 'user_uuid', targetEntity: CurrentChallenge::class)]
+    private Collection $uuid;
+
+    public function __construct()
+    {
+        $this->challenges = new ArrayCollection();
+        $this->uuid = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -166,6 +177,58 @@ class User
     public function setCreatedAt(\DateTimeImmutable $created_at): static
     {
         $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Challenge>
+     */
+    public function getChallenges(): Collection
+    {
+        return $this->challenges;
+    }
+
+    public function addChallenge(Challenge $challenge): static
+    {
+        if (!$this->challenges->contains($challenge)) {
+            $this->challenges->add($challenge);
+            $challenge->setCreatedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeChallenge(Challenge $challenge): static
+    {
+        if ($this->challenges->removeElement($challenge)) {
+            // set the owning side to null (unless already changed)
+            if ($challenge->getCreatedBy() === $this) {
+                $challenge->setCreatedBy(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function addUuid(CurrentChallenge $uuid): static
+    {
+        if (!$this->uuid->contains($uuid)) {
+            $this->uuid->add($uuid);
+            $uuid->setUserUuid($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUuid(CurrentChallenge $uuid): static
+    {
+        if ($this->uuid->removeElement($uuid)) {
+            // set the owning side to null (unless already changed)
+            if ($uuid->getUserUuid() === $this) {
+                $uuid->setUserUuid(null);
+            }
+        }
 
         return $this;
     }

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ChallengeRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -38,11 +40,20 @@ class Challenge
     #[ORM\Column(type: Types::TIME_MUTABLE)]
     private ?\DateTimeInterface $duration = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $created_by = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
+
+    #[ORM\ManyToOne(inversedBy: 'challenges')]
+    private ?User $created_by = null;
+
+    #[ORM\OneToMany(mappedBy: 'challenge_id', targetEntity: CurrentChallenge::class)]
+    private Collection $currentChallenges;
+
+    public function __construct()
+    {
+        $this->currentChallenges = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -145,17 +156,6 @@ class Challenge
         return $this;
     }
 
-    public function getCreatedBy(): ?string
-    {
-        return $this->created_by;
-    }
-
-    public function setCreatedBy(string $created_by): static
-    {
-        $this->created_by = $created_by;
-
-        return $this;
-    }
 
     public function getCreatedAt(): ?\DateTimeImmutable
     {
@@ -165,6 +165,48 @@ class Challenge
     public function setCreatedAt(\DateTimeImmutable $created_at): static
     {
         $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    public function getCreatedBy(): ?User
+    {
+        return $this->created_by;
+    }
+
+    public function setCreatedBy(?User $created_by): static
+    {
+        $this->created_by = $created_by;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CurrentChallenge>
+     */
+    public function getCurrentChallenges(): Collection
+    {
+        return $this->currentChallenges;
+    }
+
+    public function addCurrentChallenge(CurrentChallenge $currentChallenge): static
+    {
+        if (!$this->currentChallenges->contains($currentChallenge)) {
+            $this->currentChallenges->add($currentChallenge);
+            $currentChallenge->setChallengeId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCurrentChallenge(CurrentChallenge $currentChallenge): static
+    {
+        if ($this->currentChallenges->removeElement($currentChallenge)) {
+            // set the owning side to null (unless already changed)
+            if ($currentChallenge->getChallengeId() === $this) {
+                $currentChallenge->setChallengeId(null);
+            }
+        }
 
         return $this;
     }
