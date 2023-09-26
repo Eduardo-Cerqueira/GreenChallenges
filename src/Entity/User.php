@@ -17,7 +17,7 @@ class User
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::GUID)]
+    #[ORM\Column(type: Types::GUID, unique: true)]
     private ?string $uuid = null;
 
     #[ORM\Column(length: 255)]
@@ -38,13 +38,13 @@ class User
     #[ORM\Column(length: 255)]
     private ?string $country = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, options: ["default" => "user"])]
     private ?string $role = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $last_connection = null;
 
-    #[ORM\Column]
+    #[ORM\Column(options: ["default" => "CURRENT_TIMESTAMP"], updatable: false)]
     private ?\DateTimeImmutable $created_at = null;
 
     #[ORM\OneToMany(mappedBy: 'created_by', targetEntity: Challenge::class)]
