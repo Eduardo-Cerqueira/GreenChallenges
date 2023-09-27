@@ -36,6 +36,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $country = null;
 
+    #[ORM\Column(type: Types::ARRAY)]
+    private ?array $role = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $last_connection = null;
 
     /**
      * @var string The hashed password
@@ -119,7 +124,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getRole(): ?string
+    public function getRole(): ?array
     {
         return $this->role;
     }
@@ -130,6 +135,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @see UserInterface
      */
     public function getUserIdentifier(): string
+      
+    public function setRole(array $role): static
     {
         return (string) $this->email;
     }

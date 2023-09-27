@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: ChallengeRepository::class)]
 class Challenge
@@ -37,11 +38,11 @@ class Challenge
     #[ORM\Column]
     private ?int $points = null;
 
-    #[ORM\Column(type: Types::TIME_MUTABLE)]
-    private ?\DateTimeInterface $duration = null;
-
-
     #[ORM\Column]
+    private ?int $duration = null;
+
+
+    #[ORM\Column(options: ["default" => "CURRENT_TIMESTAMP"],  nullable: true, updatable: false)]
     private ?\DateTimeImmutable $created_at = null;
 
     #[ORM\ManyToOne(inversedBy: 'challenges')]
@@ -53,6 +54,8 @@ class Challenge
     public function __construct()
     {
         $this->currentChallenges = new ArrayCollection();
+        $this->setUuid(Uuid::v6());
+        $this->setCreatedAt(new \DateTimeImmutable("now"));
     }
 
     public function getId(): ?int
@@ -144,12 +147,12 @@ class Challenge
         return $this;
     }
 
-    public function getDuration(): ?\DateTimeInterface
+    public function getDuration(): ?int
     {
         return $this->duration;
     }
 
-    public function setDuration(\DateTimeInterface $duration): static
+    public function setDuration(int $duration): static
     {
         $this->duration = $duration;
 
@@ -162,7 +165,7 @@ class Challenge
         return $this->created_at;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $created_at): static
+    public function setCreatedAt(?\DateTimeImmutable $created_at): static
     {
         $this->created_at = $created_at;
 
