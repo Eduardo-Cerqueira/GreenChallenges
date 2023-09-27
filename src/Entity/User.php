@@ -88,6 +88,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * @deprecated since Symfony 5.3, use getUserIdentifier instead
+     */
     public function getUsername(): ?string
     {
         return $this->username;
@@ -135,15 +138,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @see UserInterface
      */
     public function getUserIdentifier(): string
-      
+    {
+        return (string) $this->email;
+    }
     public function setRole(array $role): static
     {
         return (string) $this->email;
     }
-
-    /**
-     * @deprecated since Symfony 5.3, use getUserIdentifier instead
-     */
     
     /**
      * @see UserInterface
