@@ -37,11 +37,11 @@ class Challenge
     #[ORM\Column]
     private ?int $points = null;
 
-    #[ORM\Column(type: Types::TIME_MUTABLE)]
-    private ?\DateTimeInterface $duration = null;
-
-
     #[ORM\Column]
+    private ?int $duration = null;
+
+
+    #[ORM\Column(options: ["default" => "CURRENT_TIMESTAMP"],  nullable: true, updatable: false)]
     private ?\DateTimeImmutable $created_at = null;
 
     #[ORM\ManyToOne(inversedBy: 'challenges')]
@@ -144,12 +144,12 @@ class Challenge
         return $this;
     }
 
-    public function getDuration(): ?\DateTimeInterface
+    public function getDuration(): ?int
     {
         return $this->duration;
     }
 
-    public function setDuration(\DateTimeInterface $duration): static
+    public function setDuration(int $duration): static
     {
         $this->duration = $duration;
 
@@ -162,7 +162,7 @@ class Challenge
         return $this->created_at;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $created_at): static
+    public function setCreatedAt(?\DateTimeImmutable $created_at): static
     {
         $this->created_at = $created_at;
 
