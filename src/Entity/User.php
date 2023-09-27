@@ -35,8 +35,8 @@ class User
     #[ORM\Column(length: 255)]
     private ?string $country = null;
 
-    #[ORM\Column(length: 255, options: ["default" => "user"])]
-    private ?string $role = null;
+    #[ORM\Column(type: Types::ARRAY, options: ["default" => "['user']"])]
+    private ?array $role = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $last_connection = null;
@@ -145,12 +145,12 @@ class User
         return $this;
     }
 
-    public function getRole(): ?string
+    public function getRole(): ?array
     {
         return $this->role;
     }
 
-    public function setRole(string $role): static
+    public function setRole(array $role): static
     {
         $this->role = $role;
 
