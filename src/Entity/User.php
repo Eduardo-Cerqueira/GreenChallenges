@@ -35,7 +35,7 @@ class User
     #[ORM\Column(length: 255)]
     private ?string $country = null;
 
-    #[ORM\Column(type: Types::ARRAY, options: ["default" => "['user']"])]
+    #[ORM\Column(type: Types::ARRAY)]
     private ?array $role = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
