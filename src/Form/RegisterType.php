@@ -36,7 +36,7 @@ class RegisterType extends AbstractType
                 'choices' => $countries,
                 'placeholder' => 'Choose a country',
             ])
-            ->add('role', Type\ChoiceType::class, [
+            ->add('roles', Type\ChoiceType::class, [
                 'choices' =>  $userChoice,
                 'multiple' => true,
                 'expanded' => false,

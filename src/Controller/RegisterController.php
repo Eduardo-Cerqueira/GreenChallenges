@@ -25,8 +25,8 @@ class RegisterController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()){
 
-            $selectedRoles = $form->get('role')->getData();
-            $user->setRole([$selectedRoles]);
+            $selectedRoles = $form->get('roles')->getData();
+            $user->setRoles([$selectedRoles]);
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
