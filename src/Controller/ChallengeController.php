@@ -18,7 +18,8 @@ class ChallengeController extends AbstractController
         $challenges = $em->getRepository(Challenge::class)->findAll();
 
         return $this->render('challenge/challengeList.html.twig', [
-            'challenges' => $challenges
+            'challenges' => $challenges,
+            'user' => $this->getUser()
         ]);
     }
 
@@ -41,7 +42,7 @@ class ChallengeController extends AbstractController
         ]);
     }
 
-    #[Route("/create", name: 'createChallenge')]
+    #[Route("/admin/create", name: 'createChallenge')]
     public function createChallenge(Request $request)
     {
         $challenge = new Challenge();
@@ -64,7 +65,7 @@ class ChallengeController extends AbstractController
         ]);
     }
 
-    #[Route("/edit/{uuid}", name: 'editChallenge')]
+    #[Route("/admin/edit/{uuid}", name: 'editChallenge')]
     public function editChallenge($uuid, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
@@ -84,7 +85,7 @@ class ChallengeController extends AbstractController
         ]);
     }
 
-    #[Route("/delete/{uuid}", name: 'deleteChallenge')]
+    #[Route("/admin/delete/{uuid}", name: 'deleteChallenge')]
     public function deleteChallenge(Challenge $challenge)
     {
         $em = $this->getDoctrine()->getManager();
