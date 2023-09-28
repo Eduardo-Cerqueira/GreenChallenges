@@ -12,6 +12,11 @@ security:
                 property: email
         # used to reload user from session & other features (e.g. switch_user)
     firewalls:
+        secured_area:
+            # ...
+            form_login:
+                # ...
+                enable_csrf: true
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
@@ -20,7 +25,7 @@ security:
             provider: app_user_provider
             custom_authenticator: App\Security\LoginAuthenticator
             logout:
-                path: app_logout
+                path: /logout
                 # where to redirect after logout
                 # target: app_any_route
 
