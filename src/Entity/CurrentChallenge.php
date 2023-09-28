@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\CurrentChallengeRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: CurrentChallengeRepository::class)]
 class CurrentChallenge
@@ -12,9 +13,6 @@ class CurrentChallenge
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $user_id = null;
 
     #[ORM\Column(length: 255)]
     private ?string $status = null;
@@ -33,7 +31,14 @@ class CurrentChallenge
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user_uuid = null;
 
+    #[ORM\Column(type: 'uuid')]
+    private ?Uuid $uuid = null;
 
+    public function __construct()
+    {
+        $this->setUuid(Uuid::v6());
+        $this->setCreatedAt(new \DateTimeImmutable("now"));
+    }
 
     public function getId(): ?int
     {
@@ -96,6 +101,18 @@ class CurrentChallenge
     public function setChallengeId(?Challenge $challenge_id): static
     {
         $this->challenge_id = $challenge_id;
+
+        return $this;
+    }
+
+    public function getUuid(): ?Uuid
+    {
+        return $this->uuid;
+    }
+
+    public function setUuid(Uuid $uuid): static
+    {
+        $this->uuid = $uuid;
 
         return $this;
     }
