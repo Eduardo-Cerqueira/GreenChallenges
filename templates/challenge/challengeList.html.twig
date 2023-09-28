@@ -5,9 +5,11 @@
     {% for challenge in challenges %}
     <tr>
         <td><a href="{{path('showChallenge', {uuid: challenge.uuid})}}">{{ challenge.title }}</a></td>
-        {% if 'ROLE_ADMIN' in user.roles %}
-        <td><a href="{{path('editChallenge', {uuid: challenge.uuid})}}">Edit</a></td>
-        <td><a href="{{path('deleteChallenge', {uuid: challenge.uuid})}}">Delete</a></td>
+        {% if user != null %}
+            {% if 'ROLE_ADMIN' in user.roles %}
+            <td><a href="{{path('editChallenge', {uuid: challenge.uuid})}}">Edit</a></td>
+            <td><a href="{{path('deleteChallenge', {uuid: challenge.uuid})}}">Delete</a></td>
+            {% endif %}
         {% endif %}
     </tr>
     {% endfor %}
