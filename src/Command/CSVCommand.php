@@ -5,6 +5,9 @@ namespace App\Command;
 use App\Entity\Challenge;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Error;
+use ErrorException;
+use Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -12,10 +15,12 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
+use Throwable;
 
 #[AsCommand(
-    name: 'CSV',
-    description: 'Add a short description for your command',
+    name: 'CSV:Import',
+    description: 'Import a csv about challenges to the database',
 )]
 class CSVCommand extends Command
 {
@@ -34,6 +39,7 @@ class CSVCommand extends Command
     {
         $this
             ->addArgument('csv_path', InputArgument::OPTIONAL, 'CSV Path')
+            ->addArgument('admin_id', InputArgument::OPTIONAL, 'Admin ID')
         ;
     }
 
@@ -41,9 +47,15 @@ class CSVCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
         $arg1 = $input->getArgument('csv_path');
+        $arg2 = $input->getArgument('admin_id');
 
         if (!$arg1) {
             $io->error('CSV path was not given !');
+            return Command::INVALID;
+        }
+
+        if (!$arg2) {
+            $io->error('The ID of the Admin doing the import was not given !');
             return Command::INVALID;
         }
 
@@ -51,10 +63,10 @@ class CSVCommand extends Command
             $io->error('File does not exist !');
             return Command::INVALID;
         }
-        
+
         if (($handle = fopen($arg1, "r")) !== false) {
             $em = $this->entityManager;
-            $user = $em->getRepository(User::class)->findOneBy(array('id' => 0));
+            $user = $em->getRepository(User::class)->findOneBy(array('id' => $arg2));
 
             while (($data = fgetcsv($handle)) !== false) {
                 $challenge = new Challenge();
