@@ -39,7 +39,7 @@ class RegisterController extends AbstractController
             return $this->redirect($this->generateUrl('indexChallenges'));
         }
 
-        return $this->render('form/register.html.twig', [
+        return $this->render('security/register.html.twig', [
             'form' => $form->createView(),
         ]);
     }
