@@ -6,9 +6,10 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\DBAL\Types\Types;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -17,6 +18,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
+    
+    #[ORM\Column(type: Types::GUID)]
+    private ?string $uuid = null;
 
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
@@ -37,7 +41,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $country = null;
 
     #[ORM\Column(type: Types::ARRAY)]
-    private ?array $role = null;
+    private ?array $role = [];
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $last_connection = null;
@@ -47,6 +51,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */                                                                                                                                                                                                                                                                                                                    
     #[ORM\Column]
     private ?string $password = null;
+    #[ORM\Column(options: ["default" => "CURRENT_TIMESTAMP"], updatable: false)]
+    private ?\DateTimeImmutable $created_at = null;
+
+    #[ORM\OneToMany(mappedBy: 'created_by', targetEntity: Challenge::class)]
+    private Collection $challenges;
+
+    public function __construct()
+    {
+        $this->challenges = new ArrayCollection();
+        $this->setUuid(Uuid::v6());
+        $this->setCreatedAt(new \DateTimeImmutable("now", new \DateTimeZone('Europe/Paris')));
+    }
 
     public function getId(): ?int
     {
@@ -129,7 +145,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getRole(): ?array
     {
-        return $this->role;
+        $roles = $this->roles ?? [];
+        $roles[] = 'ROLE_USER';
+    
+        return array_unique($roles);
     }
 
     /**
