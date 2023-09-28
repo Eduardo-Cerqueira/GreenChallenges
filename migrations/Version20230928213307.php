@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20230928171913 extends AbstractMigration
+final class Version20230928213307 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -23,10 +23,11 @@ final class Version20230928171913 extends AbstractMigration
         $this->addSql('CREATE TABLE challenge (id INT NOT NULL, created_by_id INT NOT NULL, uuid UUID NOT NULL, title VARCHAR(600) NOT NULL, description VARCHAR(255) NOT NULL, status VARCHAR(3000) NOT NULL, category VARCHAR(255) NOT NULL, subcategory VARCHAR(255) NOT NULL, points INT NOT NULL, duration INT NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP, tips VARCHAR(3000) DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_D7098951B03A8386 ON challenge (created_by_id)');
         $this->addSql('COMMENT ON COLUMN challenge.created_at IS \'(DC2Type:datetime_immutable)\'');
-        $this->addSql('CREATE TABLE current_challenge (id INT NOT NULL, challenge_id_id INT NOT NULL, user_uuid_id INT NOT NULL, user_id VARCHAR(255) NOT NULL, status VARCHAR(255) NOT NULL, points INT NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE current_challenge (id INT NOT NULL, challenge_id_id INT NOT NULL, user_uuid_id INT NOT NULL, status VARCHAR(255) NOT NULL, points INT NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, uuid UUID NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_C2F38FD7B961745 ON current_challenge (challenge_id_id)');
         $this->addSql('CREATE INDEX IDX_C2F38FD99B8CBC0 ON current_challenge (user_uuid_id)');
         $this->addSql('COMMENT ON COLUMN current_challenge.created_at IS \'(DC2Type:datetime_immutable)\'');
+        $this->addSql('COMMENT ON COLUMN current_challenge.uuid IS \'(DC2Type:uuid)\'');
         $this->addSql('CREATE TABLE "user" (id INT NOT NULL, email VARCHAR(180) NOT NULL, roles JSON NOT NULL, password VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL, surname VARCHAR(255) NOT NULL, username VARCHAR(255) NOT NULL, country VARCHAR(255) NOT NULL, last_connection TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, uuid UUID NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_8D93D649E7927C74 ON "user" (email)');
         $this->addSql('COMMENT ON COLUMN "user".created_at IS \'(DC2Type:datetime_immutable)\'');

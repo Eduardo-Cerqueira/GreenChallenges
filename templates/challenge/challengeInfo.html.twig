@@ -6,5 +6,10 @@
     {{ challenge.category }}</br>
     {{ challenge.subcategory }}</br>
     {{ challenge.points }}</br>
-    {{ challenge.duration }}
+    {{ challenge.duration }}</br>
+    {% if user != null %}
+        {% if 'ROLE_USER' in user.roles %}
+        <td><a href="{{path('acceptChallenge', {uuid: challenge.uuid})}}">Participer</a></td>
+        {% endif %}
+    {% endif %}
 {% endblock %}

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Challenge;
+use App\Entity\CurrentChallenge;
 use App\Form\ChallengeType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -38,9 +39,83 @@ class ChallengeController extends AbstractController
         }
 
         return $this->render('challenge/challengeInfo.html.twig', [
-            'challenge' => $challenge
+            'challenge' => $challenge,
+            'user' => $this->getUser()
         ]);
     }
+
+    #[Route("/accept/{uuid}", name: 'acceptChallenge')]
+    public function acceptChallenge($uuid)
+    {
+        if (!uuid_is_valid($uuid)) {
+            return $this->redirect($this->generateUrl('indexChallenges'));
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        $challenge = $em->getRepository(Challenge::class)->findOneBy(array('uuid' => $uuid));
+
+        if (is_null($challenge)) {
+            return $this->redirect($this->generateUrl('indexChallenges'));
+        }
+
+        $currentChallenge = new CurrentChallenge();
+        $user = $this->getUser();
+
+        $currentChallenge->setChallengeId($challenge);
+        $currentChallenge->setUserUuid($user);
+        $currentChallenge->setStatus('Doing');
+        $currentChallenge->setPoints($challenge->getPoints());
+
+        $em = $this->getDoctrine()->getManager();
+
+        $em->persist($currentChallenge);
+        $em->flush();
+
+        return $this->redirect($this->generateUrl('indexChallenges'));
+    }
+
+    #[Route("/complete/{uuid}", name: 'completeChallenge')]
+    public function completeChallenge($uuid)
+    {
+        if (!uuid_is_valid($uuid)) {
+            return $this->redirect($this->generateUrl('indexChallenges'));
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        $currentChallenge = $em->getRepository(CurrentChallenge::class)->findOneBy(array('uuid' => $uuid));
+
+        if (is_null($currentChallenge)) {
+            return $this->redirect($this->generateUrl('indexChallenges'));
+        }
+
+        $currentChallenge->setStatus('Completed');
+        $em->persist($currentChallenge);
+        $em->flush();
+
+        return $this->redirect($this->generateUrl('indexChallenges'));
+    }
+
+    #[Route("/abandon/{uuid}", name: 'abandonChallenge')]
+    public function abandonChallenge($uuid)
+    {
+        if (!uuid_is_valid($uuid)) {
+            return $this->redirect($this->generateUrl('indexChallenges'));
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        $currentChallenge = $em->getRepository(CurrentChallenge::class)->findOneBy(array('uuid' => $uuid));
+        
+        if (is_null($currentChallenge)) {
+            return $this->redirect($this->generateUrl('indexChallenges'));
+        }
+
+        $currentChallenge->setStatus('Abandoned');
+        $em->persist($currentChallenge);
+        $em->flush();
+
+        return $this->redirect($this->generateUrl('indexChallenges'));
+    }
+
 
     #[Route("/admin/create", name: 'createChallenge')]
     public function createChallenge(Request $request)

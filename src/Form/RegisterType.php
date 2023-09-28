@@ -22,8 +22,8 @@ class RegisterType extends AbstractType
         ];
 
         $userChoice = [
-            'User' => 'USER',
-            'Admin' => 'ADMIN',
+            'User' => 'ROLE_USER',
+            'Admin' => 'ROLE_ADMIN',
         ];
 
         $builder
