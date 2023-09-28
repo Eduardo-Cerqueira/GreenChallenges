@@ -1,6 +1,9 @@
 twig:
     default_path: '%kernel.project_dir%/templates'
     form_theme: 'bootstrap_4_layout.html.twig'
+    paths:
+        'C:\Users\aykay\Documents\symfony\GreenChallenges\public\images': images
+
 
 when@test:
     twig:
