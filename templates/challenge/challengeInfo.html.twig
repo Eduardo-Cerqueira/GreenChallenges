@@ -10,7 +10,6 @@
     {% if user != null %}
         {% if 'ROLE_USER' in user.roles %}
         <td><a href="{{path('acceptChallenge', {uuid: challenge.uuid})}}">Participer</a></td>
-        <td><a href="{{path('completeChallenge', {uuid: challenge.uuid})}}">Completer</a></td>
         {% endif %}
     {% endif %}
 {% endblock %}
