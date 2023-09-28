@@ -4,17 +4,41 @@ namespace App\Controller;
 
 use App\Entity\Challenge;
 use App\Form\ChallengeType;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route("/challenge")]
 class ChallengeController extends AbstractController
 {
-    #[Route("/", name: 'indexChallenge')]
+    #[Route("/", name: 'indexChallenges')]
     public function indexChallenge()
     {
-        return $this->render('base.html.twig');
+        $em = $this->getDoctrine()->getManager();
+        $challenges = $em->getRepository(Challenge::class)->findAll();
+
+        return $this->render('challenge/challengeList.html.twig', [
+            'challenges' => $challenges
+        ]);
+    }
+
+    #[Route("/show/{uuid}", name: 'showChallenge')]
+    public function showChallenge($uuid)
+    {
+        if (!uuid_is_valid($uuid)) {
+            return $this->redirect($this->generateUrl('indexChallenges'));
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        $challenge = $em->getRepository(Challenge::class)->findOneBy(array('uuid' => $uuid));
+
+        if (is_null($challenge)) {
+            return $this->redirect($this->generateUrl('indexChallenges'));
+        }
+
+        return $this->render('challenge/challengeInfo.html.twig', [
+            'challenge' => $challenge
+        ]);
     }
 
     #[Route("/create", name: 'createChallenge')]
@@ -32,35 +56,35 @@ class ChallengeController extends AbstractController
             $em->persist($challenge);
             $em->flush();
             
-            return $this->redirect($this->generateUrl('indexChallenge'));
+            return $this->redirect($this->generateUrl('indexChallenges'));
         }
 
-        return $this->render('form/challenge.html.twig', [
+        return $this->render('challenge/form/challenge.html.twig', [
             'form' => $form->createView(),
         ]);
     }
 
-    #[Route("/edit/{id}", name: 'editChallenge')]
-    public function editChallenge($id, Request $request)
+    #[Route("/edit/{uuid}", name: 'editChallenge')]
+    public function editChallenge($uuid, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $challenge = $em->getRepository(Challenge::class)->findOneBy(array('id' => $id));
+        $challenge = $em->getRepository(Challenge::class)->findOneBy(array('uuid' => $uuid));
         
         $form = $this->createForm(ChallengeType::class, $challenge);
         $form->handleRequest($request);
         
         if($form->isSubmitted()) {
-            $data = $form->getData();
             $em->flush();
-            return $this->redirect($this->generateUrl('indexChallenge'));
+
+            return $this->redirect($this->generateUrl('indexChallenges'));
         }
 
-        return $this->render('form/challenge.html.twig', [
+        return $this->render('challenge/form/challenge.html.twig', [
             'form' => $form->createView(),
         ]);
     }
 
-    #[Route("/delete/{id}", name: 'deleteChallenge')]
+    #[Route("/delete/{uuid}", name: 'deleteChallenge')]
     public function deleteChallenge(Challenge $challenge)
     {
         $em = $this->getDoctrine()->getManager();
@@ -68,6 +92,6 @@ class ChallengeController extends AbstractController
         $em->remove($challenge);
         $em->flush();
             
-        return $this->redirect($this->generateUrl('indexChallenge'));
+        return $this->redirect($this->generateUrl('indexChallenges'));
     }
 }
