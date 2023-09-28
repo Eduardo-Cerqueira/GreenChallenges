@@ -30,7 +30,7 @@ class RegisterController extends AbstractController
             $user->setPassword($hashedPassword);
 
             $selectedRoles = $form->get('roles')->getData();
-            $user->setRoles([$selectedRoles]);
+            $user->setRoles($selectedRoles);
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
