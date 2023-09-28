@@ -135,20 +135,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @see UserInterface
      */
     public function getUserIdentifier(): string
-      
-    public function setRole(array $role): static
     {
         return (string) $this->email;
     }
 
     /**
-     * @deprecated since Symfony 5.3, use getUserIdentifier instead
-     */
-    
-    /**
      * @see UserInterface
      */
-    public function getRoles(): array
+    function getRoles(): array
     {
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
@@ -157,13 +151,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return array_unique($roles);
     }
 
-    public function setRoles(array $roles): static
+    public function setRoles(array $roles): self
     {
         $this->roles = $roles;
 
         return $this;
     }
-
     /**
      * @see PasswordAuthenticatedUserInterface
      */
