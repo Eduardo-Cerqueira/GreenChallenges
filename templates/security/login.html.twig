@@ -30,11 +30,13 @@
     <p>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</p>
 </div>
 {% endblock %}
-
+{% apply inline_css %}
 <style>
   div {
     display: flex;
     border-color:grey;
     margin-top:20px;
+    justify-content: center;
   }
 </style>
+{% endapply %}
