@@ -6,14 +6,13 @@ use App\Entity\User;
 use App\Form\RegisterType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-
-
 
 class RegisterController extends AbstractController
 {
     #[Route("/register", name: 'register')]
-    public function register(Request $request)
+    public function register(Request $request, UserPasswordHasherInterface $passwordHasher)
     {
         $user = new User();
 
@@ -21,9 +20,14 @@ class RegisterController extends AbstractController
 
         $form->handleRequest($request);
 
-
-
         if ($form->isSubmitted() && $form->isValid()){
+            $plaintextPassword = $form->get('password')->getData();
+
+            $hashedPassword = $passwordHasher->hashPassword(
+                $user,
+                $plaintextPassword
+            );
+            $user->setPassword($hashedPassword);
 
             $selectedRoles = $form->get('roles')->getData();
             $user->setRoles([$selectedRoles]);
@@ -32,7 +36,7 @@ class RegisterController extends AbstractController
             $em->persist($user);
             $em->flush();
             
-            return $this->redirect($this->generateUrl('challengeIndex'));
+            return $this->redirect($this->generateUrl('indexChallenges'));
         }
 
         return $this->render('form/register.html.twig', [

@@ -24,32 +24,20 @@ class CurrentChallenge
 
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
-
-    #[ORM\ManyToOne(inversedBy: 'uuid')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $user_uuid = null;
     
     #[ORM\ManyToOne(inversedBy: 'currentChallenges')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Challenge $challenge_id = null;
+
+    #[ORM\ManyToOne(inversedBy: 'currentChallenges')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user_uuid = null;
 
 
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getUserId(): ?string
-    {
-        return $this->user_id;
-    }
-
-    public function setUserId(string $user_id): static
-    {
-        $this->user_id = $user_id;
-
-        return $this;
     }
 
     public function getStatus(): ?string

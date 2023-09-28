@@ -45,14 +45,15 @@ class Challenge
     #[ORM\Column(options: ["default" => "CURRENT_TIMESTAMP"],  nullable: true, updatable: false)]
     private ?\DateTimeImmutable $created_at = null;
 
-    #[ORM\ManyToOne(inversedBy: 'challenges')]
-    private ?User $created_by = null;
-
     #[ORM\OneToMany(mappedBy: 'challenge_id', targetEntity: CurrentChallenge::class)]
     private Collection $currentChallenges;
 
     #[ORM\Column(length: 3000, nullable: true)]
     private ?string $tips = null;
+
+    #[ORM\ManyToOne(inversedBy: 'challenges')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $created_by = null;
 
     public function __construct()
     {
@@ -175,18 +176,6 @@ class Challenge
         return $this;
     }
 
-    public function getCreatedBy(): ?User
-    {
-        return $this->created_by;
-    }
-
-    public function setCreatedBy(?User $created_by): static
-    {
-        $this->created_by = $created_by;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, CurrentChallenge>
      */
@@ -225,6 +214,18 @@ class Challenge
     public function setTips(?string $tips): static
     {
         $this->tips = $tips;
+
+        return $this;
+    }
+
+    public function getCreatedBy(): ?User
+    {
+        return $this->created_by;
+    }
+
+    public function setCreatedBy(?User $created_by): static
+    {
+        $this->created_by = $created_by;
 
         return $this;
     }
