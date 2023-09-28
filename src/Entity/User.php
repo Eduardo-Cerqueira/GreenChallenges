@@ -56,6 +56,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user_uuid', targetEntity: CurrentChallenge::class)]
     private Collection $currentChallenges;
 
+    private ?int $points = 0;
+
     #[ORM\Column(type: 'uuid')]
     private ?Uuid $uuid = null;
 

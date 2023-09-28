@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Classement{% endblock %}
+
+{% block body %}
+    <h1>Classement des 10 meilleurs utilisateurs</h1>
+        <ul>
+        {% for user in topUsers %}
+            <li>{{ user.username }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
