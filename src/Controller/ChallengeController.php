@@ -58,8 +58,14 @@ class ChallengeController extends AbstractController
             return $this->redirect($this->generateUrl('indexChallenges'));
         }
 
-        $currentChallenge = new CurrentChallenge();
         $user = $this->getUser();
+        $currentChallenge = $em->getRepository(CurrentChallenge::class)->findOneBy(array('challenge_id_id' => $challenge, 'user_uuid_id' => $user, 'status' => 'Doing'));
+
+        if (!is_null($currentChallenge)) {
+            return $this->redirect($this->generateUrl('showChallenge', array($uuid)));
+        }
+
+        $currentChallenge = new CurrentChallenge();
 
         $currentChallenge->setChallengeId($challenge);
         $currentChallenge->setUserUuid($user);
