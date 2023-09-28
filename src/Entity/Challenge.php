@@ -20,13 +20,13 @@ class Challenge
     #[ORM\Column(type: Types::GUID)]
     private ?string $uuid = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 600)]
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]
     private ?string $description = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 3000)]
     private ?string $status = null;
 
     #[ORM\Column(length: 255)]
@@ -50,6 +50,9 @@ class Challenge
 
     #[ORM\OneToMany(mappedBy: 'challenge_id', targetEntity: CurrentChallenge::class)]
     private Collection $currentChallenges;
+
+    #[ORM\Column(length: 3000, nullable: true)]
+    private ?string $tips = null;
 
     public function __construct()
     {
@@ -210,6 +213,18 @@ class Challenge
                 $currentChallenge->setChallengeId(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getTips(): ?string
+    {
+        return $this->tips;
+    }
+
+    public function setTips(?string $tips): static
+    {
+        $this->tips = $tips;
 
         return $this;
     }
