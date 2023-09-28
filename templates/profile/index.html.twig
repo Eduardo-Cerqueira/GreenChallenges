@@ -8,8 +8,15 @@
     <p><strong>Pays :</strong> {{ user.country }}</p>
 
  <a href="{{ path('app_change_password') }}" class="btn btn-primary">Modifier le mot de passe</a>
-
+ 
  <a href="{{ path('app_logout') }}" class="btn btn-danger">Déconnexion</a>
+
+ <h2>Défis en cours :</h2>
+<ul>
+    {% for challenge in currentChallenges %}
+        <li>{{ challenge.id.title }} ({{ challenge.status }})</li>
+    {% endfor %}
+</ul>
 
 
 {% endblock %}

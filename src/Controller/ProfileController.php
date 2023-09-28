@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Form\ChangePasswordType;
+use App\Repository\CurrentChallengeRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,7 +15,7 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 class ProfileController extends AbstractController
 {
     #[Route('/profile', name: 'app_profile')]
-    public function index(Security $security): Response
+    public function index(Security $security, CurrentChallengeRepository $currentChallengeRepository): Response
     {
         // Obtenez l'utilisateur connecté
         $user = $security->getUser();
@@ -23,22 +24,25 @@ class ProfileController extends AbstractController
             throw $this->createAccessDeniedException('Vous devez être connecté pour accéder à cette page.');
         }
 
+        // Chargez les défis en cours de l'utilisateur
+        $currentChallenges = $currentChallengeRepository->findBy(['user_uuid' => $user]);
+
         return $this->render('profile/index.html.twig', [
             'user' => $user,
+            'currentChallenges' => $currentChallenges,
         ]);
     }
 
     #[Route('/profile/change-password', name: 'app_change_password')]
     public function changePassword(Request $request, UserPasswordEncoderInterface $passwordEncoder): Response
     {
-        // Obtenez l'utilisateur connecté
+
         $user = $this->getUser();
 
         if (!$user) {
             throw $this->createAccessDeniedException('Vous devez être connecté pour accéder à cette page.');
         }
 
-        // Créez un formulaire de modification du mot de passe
         $form = $this->createForm(ChangePasswordType::class, null, [
             'action' => $this->generateUrl('app_change_password'),
         ]);
