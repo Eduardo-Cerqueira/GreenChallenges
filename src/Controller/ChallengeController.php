@@ -64,18 +64,18 @@ class ChallengeController extends AbstractController
         ]);
     }
 
-    #[Route("/edit/{id}", name: 'editChallenge')]
-    public function editChallenge($id, Request $request)
+    #[Route("/edit/{uuid}", name: 'editChallenge')]
+    public function editChallenge($uuid, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $challenge = $em->getRepository(Challenge::class)->findOneBy(array('id' => $id));
+        $challenge = $em->getRepository(Challenge::class)->findOneBy(array('uuid' => $uuid));
         
         $form = $this->createForm(ChallengeType::class, $challenge);
         $form->handleRequest($request);
         
         if($form->isSubmitted()) {
-            $data = $form->getData();
             $em->flush();
+
             return $this->redirect($this->generateUrl('indexChallenges'));
         }
 
@@ -84,7 +84,7 @@ class ChallengeController extends AbstractController
         ]);
     }
 
-    #[Route("/delete/{id}", name: 'deleteChallenge')]
+    #[Route("/delete/{uuid}", name: 'deleteChallenge')]
     public function deleteChallenge(Challenge $challenge)
     {
         $em = $this->getDoctrine()->getManager();
