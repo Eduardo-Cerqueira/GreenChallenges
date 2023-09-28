@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use App\Entity\Challenge;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputOption;
@@ -52,8 +53,12 @@ class CSVCommand extends Command
         }
         
         if (($handle = fopen($arg1, "r")) !== false) {
+            $em = $this->entityManager;
+            $user = $em->getRepository(User::class)->findOneBy(array('id' => 0));
+
             while (($data = fgetcsv($handle)) !== false) {
                 $challenge = new Challenge();
+                $challenge->setCreatedBy($user);
                 $challenge->setTitle($data[1]);
                 $challenge->setCategory($data[2]);
                 $challenge->setSubcategory($data[3]);
@@ -64,7 +69,6 @@ class CSVCommand extends Command
                 //In seconds => between 7 days and 30 days
                 $challenge->setDuration(random_int(604800, 2592000));
 
-                $em = $this->entityManager;
                 $em->persist($challenge);
             }
             fclose($handle);
