@@ -7,15 +7,30 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
-class User
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
+
+    #[ORM\Column(length: 180, unique: true)]
+    private ?string $email = null;
+
+    #[ORM\Column]
+    private array $roles = [];
+
+    /**
+     * @var string The hashed password
+     */
+    #[ORM\Column]
+    private ?string $password = null;
 
     #[ORM\Column(length: 255)]
     private ?string $name = null;
@@ -27,33 +42,29 @@ class User
     private ?string $username = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $email = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $password = null;
-
-    #[ORM\Column(length: 255)]
     private ?string $country = null;
-
-    #[ORM\Column(type: Types::ARRAY)]
-    private ?array $role = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $last_connection = null;
 
-    #[ORM\Column(options: ["default" => "CURRENT_TIMESTAMP"], updatable: false)]
+    #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
 
     #[ORM\OneToMany(mappedBy: 'created_by', targetEntity: Challenge::class)]
     private Collection $challenges;
 
     #[ORM\OneToMany(mappedBy: 'user_uuid', targetEntity: CurrentChallenge::class)]
-    private Collection $uuid;
+    private Collection $currentChallenges;
+
+    #[ORM\Column(type: 'uuid')]
+    private ?Uuid $uuid = null;
 
     public function __construct()
     {
         $this->challenges = new ArrayCollection();
-        $this->uuid = new ArrayCollection();
+        $this->currentChallenges = new ArrayCollection();
+        $this->setUuid(Uuid::v6());
+        $this->setCreatedAt(new \DateTimeImmutable("now", new \DateTimeZone('Europe/Paris')));
     }
 
     public function getId(): ?int
@@ -61,16 +72,90 @@ class User
         return $this->id;
     }
 
-    public function getUuid(): ?string
+    public function getEmail(): ?string
     {
-        return $this->uuid;
+        return $this->email;
     }
 
-    public function setUuid(string $uuid): static
+    public function setEmail(string $email): static
     {
-        $this->uuid = $uuid;
+        $this->email = $email;
 
         return $this;
+    }
+
+    /**
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
+     */
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
+    }
+
+    /**
+     * @deprecated since Symfony 5.3, use getUserIdentifier instead
+     */
+    public function getUsername(): string
+    {
+        return (string) $this->email;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        if (!in_array("ROLE_USER",$roles)) {
+            $roles[] = 'ROLE_USER';
+        }
+
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): static
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    /**
+     * @see PasswordAuthenticatedUserInterface
+     */
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): static
+    {
+        $this->password = $password;
+
+        return $this;
+    }
+
+    /**
+     * Returning a salt is only needed, if you are not using a modern
+     * hashing algorithm (e.g. bcrypt or sodium) in your security.yaml.
+     *
+     * @see UserInterface
+     */
+    public function getSalt(): ?string
+    {
+        return null;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function eraseCredentials(): void
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
     }
 
     public function getName(): ?string
@@ -97,38 +182,9 @@ class User
         return $this;
     }
 
-    public function getUsername(): ?string
-    {
-        return $this->username;
-    }
-
     public function setUsername(string $username): static
     {
         $this->username = $username;
-
-        return $this;
-    }
-
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-
-    public function setEmail(string $email): static
-    {
-        $this->email = $email;
-
-        return $this;
-    }
-
-    public function getPassword(): ?string
-    {
-        return $this->password;
-    }
-
-    public function setPassword(string $password): static
-    {
-        $this->password = $password;
 
         return $this;
     }
@@ -145,24 +201,12 @@ class User
         return $this;
     }
 
-    public function getRole(): ?array
-    {
-        return $this->role;
-    }
-
-    public function setRole(array $role): static
-    {
-        $this->role = $role;
-
-        return $this;
-    }
-
     public function getLastConnection(): ?\DateTimeInterface
     {
         return $this->last_connection;
     }
 
-    public function setLastConnection(\DateTimeInterface $last_connection): static
+    public function setLastConnection(?\DateTimeInterface $last_connection): static
     {
         $this->last_connection = $last_connection;
 
@@ -211,24 +255,44 @@ class User
         return $this;
     }
 
-    public function addUuid(CurrentChallenge $uuid): static
+    /**
+     * @return Collection<int, CurrentChallenge>
+     */
+    public function getCurrentChallenges(): Collection
     {
-        if (!$this->uuid->contains($uuid)) {
-            $this->uuid->add($uuid);
-            $uuid->setUserUuid($this);
+        return $this->currentChallenges;
+    }
+
+    public function addCurrentChallenge(CurrentChallenge $currentChallenge): static
+    {
+        if (!$this->currentChallenges->contains($currentChallenge)) {
+            $this->currentChallenges->add($currentChallenge);
+            $currentChallenge->setUserUuid($this);
         }
 
         return $this;
     }
 
-    public function removeUuid(CurrentChallenge $uuid): static
+    public function removeCurrentChallenge(CurrentChallenge $currentChallenge): static
     {
-        if ($this->uuid->removeElement($uuid)) {
+        if ($this->currentChallenges->removeElement($currentChallenge)) {
             // set the owning side to null (unless already changed)
-            if ($uuid->getUserUuid() === $this) {
-                $uuid->setUserUuid(null);
+            if ($currentChallenge->getUserUuid() === $this) {
+                $currentChallenge->setUserUuid(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUuid(): ?Uuid
+    {
+        return $this->uuid;
+    }
+
+    public function setUuid(Uuid $uuid): static
+    {
+        $this->uuid = $uuid;
 
         return $this;
     }

@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div id="signup">
+    <form method="post">
+        {% if error %}
+            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        {% endif %}
+
+        <h1 class="h3 mb-3 font-weight-normal">Merci de vous connecter</h1>
+        <label for="inputEmail">Email</label>
+        <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus>
+        <label for="inputPassword">Password</label>
+        <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+        <button id="sign-in-button" class="btn btn-lg btn-primary" type="submit">
+            Sign in
+        </button>
+    </form>
+</div>
+{% apply inline_css %}
+<style>
+    #signup {
+        max-width: 25%;
+        border-color:grey;
+        margin: 10% auto;
+    }
+    
+    #sign-in-button {
+        margin-top: 10px;
+    }
+</style>
+{% endapply %}
+{% endblock %}

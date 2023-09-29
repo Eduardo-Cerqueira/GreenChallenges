@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\CurrentChallengeRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: CurrentChallengeRepository::class)]
 class CurrentChallenge
@@ -14,9 +15,6 @@ class CurrentChallenge
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $user_id = null;
-
-    #[ORM\Column(length: 255)]
     private ?string $status = null;
     
     #[ORM\Column]
@@ -24,32 +22,27 @@ class CurrentChallenge
 
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
-
-    #[ORM\ManyToOne(inversedBy: 'uuid')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $user_uuid = null;
     
     #[ORM\ManyToOne(inversedBy: 'currentChallenges')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Challenge $challenge_id = null;
 
+    #[ORM\ManyToOne(inversedBy: 'currentChallenges')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user_uuid = null;
 
+    #[ORM\Column(type: 'uuid')]
+    private ?Uuid $uuid = null;
+
+    public function __construct()
+    {
+        $this->setUuid(Uuid::v6());
+        $this->setCreatedAt(new \DateTimeImmutable("now"));
+    }
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getUserId(): ?string
-    {
-        return $this->user_id;
-    }
-
-    public function setUserId(string $user_id): static
-    {
-        $this->user_id = $user_id;
-
-        return $this;
     }
 
     public function getStatus(): ?string
@@ -108,6 +101,18 @@ class CurrentChallenge
     public function setChallengeId(?Challenge $challenge_id): static
     {
         $this->challenge_id = $challenge_id;
+
+        return $this;
+    }
+
+    public function getUuid(): ?Uuid
+    {
+        return $this->uuid;
+    }
+
+    public function setUuid(Uuid $uuid): static
+    {
+        $this->uuid = $uuid;
 
         return $this;
     }

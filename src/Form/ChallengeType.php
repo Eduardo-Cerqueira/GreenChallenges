@@ -15,6 +15,9 @@ class ChallengeType extends AbstractType
         $builder
             ->add('title', Type\TextType::class)
             ->add('description', Type\TextType::class)
+            ->add('tips', Type\TextType::class, [
+                'required' => false
+            ])
             ->add('status', Type\TextType::class)
             ->add('category', Type\TextType::class)
             ->add('subcategory', Type\TextType::class)

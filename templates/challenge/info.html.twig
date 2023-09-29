@@ -1,0 +1,17 @@
+{% extends('base.html.twig') %}
+
+{% block body %}
+    {{ challenge.title }}</br>
+    {{ challenge.description }}</br>
+    {{ challenge.category }}</br>
+    {{ challenge.subcategory }}</br>
+    {{ challenge.points }}</br>
+    {{ challenge.duration }}</br>
+    {% if user != null %}
+        {% if 'ROLE_USER' in user.roles %}
+            {% if current_challenge == false %}
+                <td><a href="{{path('acceptChallenge', {uuid: challenge.uuid})}}">Participer</a></td>
+            {% endif %}
+        {% endif %}
+    {% endif %}
+{% endblock %}
