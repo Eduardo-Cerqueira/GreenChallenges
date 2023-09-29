@@ -14,7 +14,7 @@
         {{ encore_entry_script_tags('app') }}
     {% endblock %}
 </head>
-<nav class="navbar navbar-expand-lg navbar-light bg-light" style="align-items: center;background-color:">
+<nav class="navbar navbar-expand-lg navbar-light bg-light" style="align-items: center;background-color: #0cfa77;">
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
         <a class="logo" href="/" style="margin-right: 10px;">
@@ -28,8 +28,8 @@
             {% set roles = app.user.roles %}
             {% if roles|length > 1 %}
                 {# User has more than one role #}
-                <a class="nav-item nav-link" href="#">Leaderboard</a>
-                <a class="nav-item nav-link" href="#">Statistics</a>
+                <a class="nav-item nav-link" href="{{ path('topUsers') }}">Leaderboard</a>
+                <a class="nav-item nav-link" href="{{path('app_chart')}}">Statistics</a>
             {% endif %}
         {% else %}
             <a class="nav-item nav-link" href="{{ path('app_login') }}">Login</a>
