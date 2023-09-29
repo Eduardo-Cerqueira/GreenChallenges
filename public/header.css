@@ -1,0 +1,8 @@
+
+#navbarNavAltMarkup{
+    display: flex;
+    align-content: center;
+}
+.navbar-nav{
+    margin-bottom: 10px;
+}
