@@ -159,6 +159,10 @@ class ChallengeController extends AbstractController
     #[Route("/top-users", name: 'topUsers')]
     public function topUsers(CurrentChallengeRepository $currentChallengeRepository)
     {
+        if (!$this->getUser()) {
+            throw $this->createAccessDeniedException('Accès refusé.');
+        }
+        
         $topUsers = $currentChallengeRepository->findTopUsersWithPoints();
 
         return $this->render('challenge/top_users.html.twig', [
