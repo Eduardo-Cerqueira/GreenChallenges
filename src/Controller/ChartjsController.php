@@ -9,9 +9,10 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
 
+#[Route('/chart', name: 'chart')]
 class ChartjsController extends AbstractController
 {
-    #[Route('/chartjs', name: 'app_chart')]
+    #[Route('/admin/challenge/status', name: 'app_chart')]
     public function index(ChartBuilderInterface $chartBuilder): Response
     {
         $currentchallenge = $this->getDoctrine()->getManager()->getRepository(CurrentChallenge::class);;
@@ -35,16 +36,7 @@ class ChartjsController extends AbstractController
             ],
         ]);
 
-        $chart->setOptions([
-            'scales' => [
-                'y' => [
-                    'suggestedMin' => 0,
-                    'suggestedMax' => 100,
-                ],
-            ],
-        ]);
-
-        return $this->render('chartjs.html.twig', [
+        return $this->render('chart/doughtnut.html.twig', [
             'chart' => $chart,
         ]);
     }
