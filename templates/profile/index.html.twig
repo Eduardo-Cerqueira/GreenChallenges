@@ -1,0 +1,21 @@
+
+
+{% block body %}
+    <h1>Votre Profil</h1>
+    <p><strong>Nom :</strong> {{ user.name }}</p>
+    <p><strong>Prénom :</strong> {{ user.surname }}</p>
+    <p><strong>Pseudo :</strong> {{ user.username }}</p>
+    <p><strong>Pays :</strong> {{ user.country }}</p>
+
+<a href="{{ path('app_change_password') }}" class="btn btn-primary">Modifier le mot de passe</a>
+<a href="{{ path('app_logout') }}" class="btn btn-danger">Déconnexion</a>
+
+<h2>Défis en cours :</h2>
+<ul>
+    {% for currentChallenge in currentChallenges %}
+        <li>{{ currentChallenge.getChallengeId.title }} ({{ currentChallenge.status }})</li>
+    {% endfor %}
+</ul>
+
+
+{% endblock %}
