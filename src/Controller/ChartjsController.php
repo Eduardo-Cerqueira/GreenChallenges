@@ -12,7 +12,7 @@ use Symfony\UX\Chartjs\Model\Chart;
 #[Route('/chart', name: 'chart')]
 class ChartjsController extends AbstractController
 {
-    #[Route('/challenge/status', name: 'app_chart')]
+    #[Route('/admin/challenge/status', name: 'app_chart')]
     public function index(ChartBuilderInterface $chartBuilder): Response
     {
         $em = $this->getDoctrine()->getManager();
@@ -33,15 +33,6 @@ class ChartjsController extends AbstractController
                     'backgroundColor' => ['rgb(255, 99, 132)', 'rgb(255, 99, 0)', 'rgb(255, 0, 132)', 'rgb(0, 99, 132)'],
                     'borderColor' => 'rgb(255, 255, 255)',
                     'data' => [sizeof($doing), sizeof($completed), sizeof($timeout), sizeof($abandoned)],
-                ],
-            ],
-        ]);
-
-        $chart->setOptions([
-            'scales' => [
-                'y' => [
-                    'suggestedMin' => 0,
-                    'suggestedMax' => 100,
                 ],
             ],
         ]);
