@@ -18,7 +18,7 @@ class ChallengeController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $challenges = $em->getRepository(Challenge::class)->findAll();
 
-        return $this->render('challenge/challengeList.html.twig', [
+        return $this->render('challenge/list.html.twig', [
             'challenges' => $challenges,
             'user' => $this->getUser()
         ]);
@@ -38,7 +38,7 @@ class ChallengeController extends AbstractController
             return $this->redirect($this->generateUrl('indexChallenges'));
         }
 
-        return $this->render('challenge/challengeInfo.html.twig', [
+        return $this->render('challenge/info.html.twig', [
             'challenge' => $challenge,
             'user' => $this->getUser()
         ]);
@@ -141,7 +141,7 @@ class ChallengeController extends AbstractController
             return $this->redirect($this->generateUrl('indexChallenges'));
         }
 
-        return $this->render('challenge/form/challenge.html.twig', [
+        return $this->render('challenge/create.html.twig', [
             'form' => $form->createView(),
         ]);
     }
@@ -161,7 +161,7 @@ class ChallengeController extends AbstractController
             return $this->redirect($this->generateUrl('indexChallenges'));
         }
 
-        return $this->render('challenge/form/challenge.html.twig', [
+        return $this->render('challenge/create.html.twig', [
             'form' => $form->createView(),
         ]);
     }
