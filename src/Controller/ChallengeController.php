@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Challenge;
 use App\Entity\CurrentChallenge;
+use App\Repository\CurrentChallengeRepository;
 use App\Form\ChallengeType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -152,6 +153,16 @@ class ChallengeController extends AbstractController
 
         return $this->render('challenge/create.html.twig', [
             'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route("/top-users", name: 'topUsers')]
+    public function topUsers(CurrentChallengeRepository $currentChallengeRepository)
+    {
+        $topUsers = $currentChallengeRepository->findTopUsersWithPoints();
+
+        return $this->render('challenge/top_users.html.twig', [
+            'topUsers' => $topUsers,
         ]);
     }
 

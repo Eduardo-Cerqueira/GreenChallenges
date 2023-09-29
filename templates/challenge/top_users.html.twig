@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Top 10 des utilisateurs ayant complété leurs défis</h1>
+    <ul>
+        {% for user in topUsers %}
+            <li>{{ user.userName }} - {{ user.totalPoints }} points</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
