@@ -1,0 +1,26 @@
+{% extends('base.html.twig') %}
+
+{% block body %}
+<div id="register">
+{{ form_start(form) }}
+    {{ form_row(form.name) }}
+    {{ form_row(form.surname) }}
+    {{ form_row(form.username) }}
+    {{ form_row(form.email) }}
+    {{ form_row(form.password) }}
+    {{ form_row(form.country) }}
+    {{ form_row(form.roles) }}
+
+    {{ form_row(form.save) }}
+{{ form_end(form) }}
+</div>
+{% apply inline_css %}
+<style>
+    #register {
+        max-width: 50%;
+        border-color:grey;
+        margin: 25px auto;
+    }
+</style>
+{% endapply %}
+{% endblock %}
