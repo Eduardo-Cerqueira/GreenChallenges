@@ -27,16 +27,16 @@
             Sign in
         </button>
     </form>
-    <p>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</p>
 </div>
 {% endblock %}
-{% apply inline_css %}
-<style>
-  div {
-    display: flex;
-    border-color:grey;
-    margin-top:20px;
-    justify-content: center;
-  }
-</style>
-{% endapply %}
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        div {
+            display: flex;
+            border-color: grey;
+            margin-top: 20px;
+            justify-content: center;
+        }
+    </style>
+{% endblock %}
