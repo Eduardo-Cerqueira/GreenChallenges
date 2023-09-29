@@ -1,5 +1,37 @@
 {% extends('base.html.twig') %}
 
 {% block body %}
-    {{ form(form) }}
+<div id="register">
+    <label for="inputName">Prénom</label>
+    {{ form(form.name) }}
+    <label for="inputSurname">Nom de famille</label>
+    {{ form(form.surname) }}
+    <label for="inputUsername">Nom d'utilisateur</label>
+    {{ form(form.username) }}
+    <label for="inputEmail">Email</label>
+    {{ form(form.email) }}
+    <label for="inputPassword">Mot de passe</label>
+    {{ form(form.password) }}
+    <label for="selectCountry">Pays</label>
+    {{ form(form.country) }}
+    <label for="selectRoles">Roles</label>
+    {{ form(form.roles) }}
+</div>
+{% apply inline_css %}
+<style>
+    #register {
+        max-width: 50%;
+        border-color:grey;
+        margin: 75px auto;
+    }
+        
+    #sign-in-button {
+        margin-top: 10px;
+    }
+
+    label {
+        margin-top: 10px;
+    }
+</style>
+{% endapply %}
 {% endblock %}
