@@ -20,17 +20,15 @@
         </button>
     </form>
 </div>
-{% apply inline_css %}
-<style>
-    #signup {
-        max-width: 25%;
-        border-color:grey;
-        margin: 10% auto;
-    }
-    
-    #sign-in-button {
-        margin-top: 10px;
-    }
-</style>
-{% endapply %}
+{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        div {
+            display: flex;
+            border-color: grey;
+            margin-top: 20px;
+            justify-content: center;
+        }
+    </style>
 {% endblock %}

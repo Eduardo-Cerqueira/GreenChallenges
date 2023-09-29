@@ -169,6 +169,9 @@
     "symfony/ux-chartjs": {
         "version": "v2.12.0"
     },
+    "symfony/ux-twig-component": {
+        "version": "v2.12.0"
+    },
     "symfony/ux-typed": {
         "version": "v2.12.0"
     },

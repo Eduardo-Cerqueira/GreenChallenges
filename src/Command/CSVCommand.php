@@ -34,8 +34,7 @@ class CSVCommand extends Command
         $this
             ->addArgument('csv_path', InputArgument::OPTIONAL, 'CSV Path')
             ->addArgument('admin_id', InputArgument::OPTIONAL, 'Admin ID')
-            ->addArgument('avoid_rows', InputArgument::OPTIONAL, 'Avoid Rows')
-        ;
+            ->addArgument('avoid_rows', InputArgument::OPTIONAL, 'Avoid Rows');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
