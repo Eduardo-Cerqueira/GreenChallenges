@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div style="width: 100%; display: flex; flex-wrap: wrap; justify-content: space-around;">
+    {% for challenge in challenges %}
+    <div style="width: 280px; border: 1px solid #ccc; border-radius: 5px; padding: 8px; margin: 10px; background-color: #f9f9f9;">
+        <h2 style="font-size: 1.2em; margin-bottom: 8px;">
+            <a href="{{ path('showChallenge', {uuid: challenge.uuid }) }}">
+                {{ challenge.title|slice(0, 50) ~ (challenge.title|length > 50 ? '...' : '') }}
+            </a>
+        </h2>
+        <p style="font-size: 0.9em;">
+            {{ challenge.description|slice(0, 50) ~ (challenge.description|length > 50 ? '...' : '') }}
+        </p>
+        {% if user != null %}
+            {% if 'ROLE_ADMIN' in user.roles %}
+            <div>
+                <a href="{{ path('editChallenge', {uuid: challenge.uuid}) }}" style="margin-right: 10px; font-size: 0.8em;">Edit</a>
+                <a href="{{ path('deleteChallenge', {uuid: challenge.uuid}) }}" style="font-size: 0.8em;">Delete</a>
+            </div>
+            {% endif %}
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

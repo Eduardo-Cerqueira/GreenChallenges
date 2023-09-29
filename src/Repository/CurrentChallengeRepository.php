@@ -21,6 +21,21 @@ class CurrentChallengeRepository extends ServiceEntityRepository
         parent::__construct($registry, CurrentChallenge::class);
     }
 
+    public function findTopUsersWithPoints(): array
+    {
+        return $this->createQueryBuilder('c')
+            ->select('user.name AS userName', 'SUM(c.points) as totalPoints') 
+            ->join('c.user_uuid', 'user')
+            ->andWhere('c.status = :status')
+            ->setParameter('status', 'Completed')
+            ->groupBy('user.name')
+            ->orderBy('totalPoints', 'DESC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
+    }
+    
+    
 //    /**
 //     * @return CurrentChallenge[] Returns an array of CurrentChallenge objects
 //     */

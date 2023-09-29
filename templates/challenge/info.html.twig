@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div style="width: 300px; margin: 0 auto; text-align: center; border: 1px solid #ccc; border-radius: 5px; padding: 20px;">
+    <h2 style="font-size: 1.5em; margin-bottom: 15px;">{{ challenge.title }}</h2>
+    <p style="font-size: 1.2em; margin-bottom: 10px;">{{ challenge.description }}</p>
+    <div style="font-size: 1.1em; margin-bottom: 10px;">
+        <strong>Catégorie:</strong> {{ challenge.category }}</br>
+        <strong>Sous-catégorie:</strong> {{ challenge.subcategory }}</br>
+        <strong>Points:</strong> {{ challenge.points }}</br>
+        <strong>Durée:</strong> {{ challenge.duration }}</br>
+    </div>
+    {% if user != null %}
+        {% if 'ROLE_USER' in user.roles %}
+            {% if current_challenge == false %}
+                <a href="{{ path('acceptChallenge', {uuid: challenge.uuid}) }}" style="text-decoration: none; color: #4caf50; font-size: 1.1em;">Participer</a>
+            {% endif %}
+        {% endif %}
+    {% endif %}
+</div>
+{% endblock %}
