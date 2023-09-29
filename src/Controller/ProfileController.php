@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Form\ChangePasswordType;
 use App\Repository\CurrentChallengeRepository;
+use DateInterval;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,6 +27,18 @@ class ProfileController extends AbstractController
 
         // Chargez les défis en cours de l'utilisateur
         $currentChallenges = $currentChallengeRepository->findBy(['user_uuid' => $user]);
+        foreach($currentChallenges as $challenge){
+            $newDate = $challenge->getCreatedAt()->add(new DateInterval('PT'.$challenge->getChallengeId()->getDuration().'S'));
+            $isDone = date('m/d/Y h:i:s a', time()) >= $newDate->format('m/d/Y h:i:s a');
+            
+            if ($isDone and $challenge->getStatus() == 'Doing') {
+                $em = $this->getDoctrine()->getManager();
+                $challenge->setStatus('Timeout');
+                $em->persist($challenge);
+                $em->flush();
+            }
+        }
+
         $completedChallenges = $currentChallengeRepository->findBy(['user_uuid' => $user, 'status' => 'Completed']);
         $total_points = 0;
         foreach($completedChallenges as $challenge){
