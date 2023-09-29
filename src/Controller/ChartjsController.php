@@ -9,10 +9,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
 
-#[Route('/chart', name: 'chart')]
 class ChartjsController extends AbstractController
 {
-    #[Route('/admin/challenge/status', name: 'app_chart')]
+    #[Route('/chart/admin/challenge/status', name: 'app_chart')]
     public function index(ChartBuilderInterface $chartBuilder): Response
     {
         $currentchallenge = $this->getDoctrine()->getManager()->getRepository(CurrentChallenge::class);;
