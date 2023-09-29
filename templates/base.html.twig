@@ -29,6 +29,9 @@
             {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                 <a class="nav-item nav-link" href="{{ path('app_logout') }}">Sign Out</a>
             {% else %}
+            {% if app.user %}
+                {{ app.user.userIdentifier }}
+            {% endif %}
                 <!-- Display other links for non-authenticated users -->
             {% endif %}
             </div>
