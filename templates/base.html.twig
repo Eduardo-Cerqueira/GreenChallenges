@@ -40,28 +40,28 @@
 </nav>
 <body>
     {% block body %}
-    <div class="p-5" style="font-size: 1.3em;">
-        <span
-            {{ stimulus_controller('symfony/ux-typed', {
-                strings: [
-                    'Welcome to Green Grin Challenges',
-                    'Log in!',
-                    'Take care of your future',
-                ],
-                loop: true,
-                showCursor: true,
-                cursorChar: '|'
-            }) }}
-        ></span>
-    </div>
-    <div class="gifs" style="display:flex; justify-content:space-around; ">
-        <div class="tenor-gif-embed" data-postid="23239051" data-share-method="host" data-aspect-ratio="0.75" data-width="20%"><a href="https://tenor.com/view/wonders-of-nture-nature-aesthetic-calming-gif-23239051">Wonders Of Nture Nature GIF</a>from <a href="https://tenor.com/search/wonders+of+nture-gifs">Wonders Of Nture GIFs</a></div> <script type="text/javascript" async src="https://tenor.com/embed.js"></script>
-        <img src="{{ asset('images/green_challenges.png') }}" alt="Green Challenges Logo" height="200px">
-        <div class="tenor-gif-embed" data-postid="5355393" data-share-method="host" data-aspect-ratio="1" data-width="20%"><a href="https://tenor.com/view/sign-arrows-recycle-green-clean-gif-5355393">Recycle GIF</a>from <a href="https://tenor.com/search/sign-gifs">Sign GIFs</a></div> <script type="text/javascript" async src="https://tenor.com/embed.js"></script></div>
-    <div style="display:flex; justify-content:space-around; font-weight: bold; font-style: italic;">
-        <p>Enjoy nature</p>
-        <p>                     </p> 
-        <p>Be mindful of your actions</p>
+    <div class="content-body" style="display:inline; text-align: center;">
+        <img src="{{ asset('images/green_challenges.png') }}" alt="Green Challenges Logo" style="display: flex; align-content: center; margin: auto;  margin-top: 100px;">
+        <div class="p-5" style="font-size: 1.3em;">
+            <span
+                {{ stimulus_controller('symfony/ux-typed', {
+                    strings: [
+                        'Welcome to Green Challenges',
+                        'Take care of your future',
+                        "GreenChallenges est une organisation à but non lucratif dédiée à la
+                        promotion de modes de vie durables et respectueux de
+                        l'environnement.",
+                        "L'entreprise cherche à encourager la participation
+                        active des individus dans la protection de la planète en proposant des
+                        initiatives engageantes et éducatives.",
+                        'Log in!',
+                    ],
+                    loop: true,
+                    showCursor: true,
+                    cursorChar: '|'
+                })}}
+            />
+        </div>
     </div>
     {% endblock %}
 </body>
