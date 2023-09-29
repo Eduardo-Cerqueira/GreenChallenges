@@ -9,7 +9,9 @@
     {{ challenge.duration }}</br>
     {% if user != null %}
         {% if 'ROLE_USER' in user.roles %}
-        <td><a href="{{path('acceptChallenge', {uuid: challenge.uuid})}}">Participer</a></td>
+            {% if current_challenge == false %}
+                <td><a href="{{path('acceptChallenge', {uuid: challenge.uuid})}}">Participer</a></td>
+            {% endif %}
         {% endif %}
     {% endif %}
 {% endblock %}
