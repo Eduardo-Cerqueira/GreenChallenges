@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\CurrentChallenge;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -45,4 +46,28 @@ class CurrentChallengeRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function getSumStatus(string $status): ?Array
+    {
+        $qb = $this->createQueryBuilder('c')
+            ->select('COUNT(c) as total')
+            ->where('c.status = :status')
+            ->setParameter('status', $status)
+            ->getQuery();
+
+        return $qb->getOneOrNullResult();
+    }
+
+    public function getSumPoints(User $user, string $status): ?Array
+    {
+        $qb = $this->createQueryBuilder('c')
+            ->select('SUM(c.points) as total')
+            ->where('c.status = :status')
+            ->setParameter('status', $status)
+            ->andWhere('c.user_uuid = :user')
+            ->setParameter('user', $user)
+            ->getQuery();
+
+        return $qb->getOneOrNullResult();
+    }
 }

@@ -14,13 +14,12 @@ class ChartjsController extends AbstractController
     #[Route('/chartjs', name: 'app_chart')]
     public function index(ChartBuilderInterface $chartBuilder): Response
     {
-        $em = $this->getDoctrine()->getManager();
-        $doing = $em->getRepository(CurrentChallenge::class)->findBy(['status' => 'Doing']);
-        $completed = $em->getRepository(CurrentChallenge::class)->findBy(['status' => 'Completed']);
-        $timeout = $em->getRepository(CurrentChallenge::class)->findBy(['status' => 'Timeout']);
-        $abandoned = $em->getRepository(CurrentChallenge::class)->findBy(['status' => 'Abandoned']);
-
-
+        $currentchallenge = $this->getDoctrine()->getManager()->getRepository(CurrentChallenge::class);;
+        
+        $doing = $currentchallenge->getSumStatus('Doing');
+        $completed = $currentchallenge->getSumStatus('Completed');
+        $timeout = $currentchallenge->getSumStatus('Timeout');
+        $abandoned = $currentchallenge->getSumStatus('Abandoned');
 
         $chart = $chartBuilder->createChart(Chart::TYPE_DOUGHNUT);
 
@@ -31,7 +30,7 @@ class ChartjsController extends AbstractController
                     'label' => 'Users challenges',
                     'backgroundColor' => ['rgb(255, 99, 132)', 'rgb(255, 99, 0)', 'rgb(255, 0, 132)', 'rgb(0, 99, 132)'],
                     'borderColor' => 'rgb(255, 255, 255)',
-                    'data' => [sizeof($doing), sizeof($completed), sizeof($timeout), sizeof($abandoned)],
+                    'data' => [$doing["total"], $completed["total"], $timeout["total"], $abandoned["total"]],
                 ],
             ],
         ]);
