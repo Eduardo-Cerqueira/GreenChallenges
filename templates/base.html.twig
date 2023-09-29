@@ -36,6 +36,23 @@
         </div>
     </nav>
     <body>
-        {% block body %}{% endblock %}
+        {% block body %}
+    <div class="p-5" style="font-size: 1.3em;">
+        <span
+            {{ stimulus_controller('symfony/ux-typed', {
+                strings: [
+                    'Welcome to Green Grin Challenges',
+                    'Log in!',
+                    'Take care of your future',
+                ],
+                loop: true,
+                showCursor: true,
+                cursorChar: '|'
+            }) }}
+        ></span>
+    </div>
+
+
+        {% endblock %}
     </body>
 </html>

@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div style="max-width: 600px; margin: 0 auto; text-align: center;">
+    <h1>Votre Profil</h1>
+    <p><strong>Nom :</strong> {{ user.name }}</p>
+    <p><strong>Prénom :</strong> {{ user.surname }}</p>
+    <p><strong>Pseudo :</strong> {{ user.username }}</p>
+    <p><strong>Pays :</strong> {{ user.country }}</p>
+    <p><strong>Points:</strong> {{ points }}</p>
+
+    <div style="margin-top: 20px;">
+        <a href="{{ path('app_change_password') }}" style="text-decoration: none; color: #fff; background-color: #007bff; padding: 10px 20px; border-radius: 5px; margin-right: 10px;">Modifier le mot de passe</a>
+        <a href="{{ path('app_logout') }}" style="text-decoration: none; color: #fff; background-color: #dc3545; padding: 10px 20px; border-radius: 5px;">Déconnexion</a>
+    </div>
+
+    <h2 style="margin-top: 30px;">Défis en cours :</h2>
+    <ul style="list-style-type: none; padding: 0;">
+        {% for currentChallenge in currentChallenges %}
+            {% if currentChallenge.status == 'Doing' %}
+                <li style="margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px; padding: 10px;">
+                    <a href="{{ path('showChallenge', {uuid: currentChallenge.getChallengeId.uuid}) }}" style="text-decoration: none; color: #007bff;">{{ currentChallenge.getChallengeId.title }}</a> ({{ currentChallenge.status }})
+                    <a href="{{ path('completeChallenge', {uuid: currentChallenge.uuid}) }}" style="text-decoration: none; color: #28a745; margin-left: 10px;">Completer</a>
+                    <a href="{{ path('abandonChallenge', {uuid: currentChallenge.uuid}) }}" style="text-decoration: none; color: #dc3545; margin-left: 10px;">Abandonner</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+
+    <h2>Historique des défis :</h2>
+    <ul style="list-style-type: none; padding: 0;">
+        {% for currentChallenge in currentChallenges %}
+            {% if currentChallenge.status != 'Doing' %}
+                <li style="margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px; padding: 10px;">
+                    <a href="{{ path('showChallenge', {uuid: currentChallenge.getChallengeId.uuid}) }}" style="text-decoration: none; color: #007bff;">{{ currentChallenge.getChallengeId.title }}</a> ({{ currentChallenge.status }})
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

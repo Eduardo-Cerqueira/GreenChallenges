@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Challenge;
 use App\Entity\CurrentChallenge;
+use App\Repository\CurrentChallengeRepository;
 use App\Form\ChallengeType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -81,8 +82,6 @@ class ChallengeController extends AbstractController
         $currentChallenge->setStatus('Doing');
         $currentChallenge->setPoints($challenge->getPoints());
 
-        $em = $this->getDoctrine()->getManager();
-
         $em->persist($currentChallenge);
         $em->flush();
 
@@ -152,6 +151,20 @@ class ChallengeController extends AbstractController
 
         return $this->render('challenge/create.html.twig', [
             'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route("/top-users", name: 'topUsers')]
+    public function topUsers(CurrentChallengeRepository $currentChallengeRepository)
+    {
+        if (!$this->getUser()) {
+            throw $this->createAccessDeniedException('Accès refusé.');
+        }
+        
+        $topUsers = $currentChallengeRepository->findTopUsersWithPoints();
+
+        return $this->render('challenge/top_users.html.twig', [
+            'topUsers' => $topUsers,
         ]);
     }
 

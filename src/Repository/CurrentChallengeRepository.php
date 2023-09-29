@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\CurrentChallenge;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -21,6 +22,21 @@ class CurrentChallengeRepository extends ServiceEntityRepository
         parent::__construct($registry, CurrentChallenge::class);
     }
 
+    public function findTopUsersWithPoints(): array
+    {
+        return $this->createQueryBuilder('c')
+            ->select('user.name AS userName', 'SUM(c.points) as totalPoints') 
+            ->join('c.user_uuid', 'user')
+            ->andWhere('c.status = :status')
+            ->setParameter('status', 'Completed')
+            ->groupBy('user.name')
+            ->orderBy('totalPoints', 'DESC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
+    }
+    
+    
 //    /**
 //     * @return CurrentChallenge[] Returns an array of CurrentChallenge objects
 //     */
@@ -45,4 +61,28 @@ class CurrentChallengeRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function getSumStatus(string $status): ?Array
+    {
+        $qb = $this->createQueryBuilder('c')
+            ->select('COUNT(c) as total')
+            ->where('c.status = :status')
+            ->setParameter('status', $status)
+            ->getQuery();
+
+        return $qb->getOneOrNullResult();
+    }
+
+    public function getSumPoints(User $user, string $status): ?Array
+    {
+        $qb = $this->createQueryBuilder('c')
+            ->select('SUM(c.points) as total')
+            ->where('c.status = :status')
+            ->setParameter('status', $status)
+            ->andWhere('c.user_uuid = :user')
+            ->setParameter('user', $user)
+            ->getQuery();
+
+        return $qb->getOneOrNullResult();
+    }
 }
