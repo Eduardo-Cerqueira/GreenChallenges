@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-<div style="display:flex; flex-direction:row;max-width: 600px; margin: 0 auto; text-align: center;padding-left:auto;margin-top:30px;margin-left:20px;">
+<div style="display:flex; justify-content:space-around;flex-direction:row; margin: 0 auto; text-align: center;padding-left:auto;margin-top:30px;margin-left:20px;">
     <div class="profile-section" style:"margin-right:30px">
         <h1>Votre Profil</h1>
         <p><strong>Nom :</strong> {{ user.name }}</p>
@@ -16,7 +16,7 @@
     </div>
     </div>
 
-    <div class="profile-challenge">
+    <div class="profile-challenge" style="width:60%">
         <h2 style="margin-top: 30px;">Défis en cours :</h2>
         <ul style="list-style-type: none; padding: 0;">
             {% for currentChallenge in currentChallenges %}
