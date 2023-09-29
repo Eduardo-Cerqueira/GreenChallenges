@@ -34,13 +34,22 @@ class ChallengeController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $challenge = $em->getRepository(Challenge::class)->findOneBy(array('uuid' => $uuid));
 
+        $user = $this->getUser();
+        $currentChallenge = $em->getRepository(CurrentChallenge::class)->findOneBy(array('challenge_id' => $challenge, 'user_uuid' => $user, 'status' => 'Doing'));
+        $is_current = false;
+
+        if (!is_null($currentChallenge)) {
+            $is_current = true;
+        }
+
         if (is_null($challenge)) {
             return $this->redirect($this->generateUrl('indexChallenges'));
         }
 
         return $this->render('challenge/info.html.twig', [
             'challenge' => $challenge,
-            'user' => $this->getUser()
+            'user' => $user,
+            'current_challenge' => $is_current
         ]);
     }
 
@@ -59,7 +68,7 @@ class ChallengeController extends AbstractController
         }
 
         $user = $this->getUser();
-        $currentChallenge = $em->getRepository(CurrentChallenge::class)->findOneBy(array('challenge_id_id' => $challenge, 'user_uuid_id' => $user, 'status' => 'Doing'));
+        $currentChallenge = $em->getRepository(CurrentChallenge::class)->findOneBy(array('challenge_id' => $challenge, 'user_uuid' => $user, 'status' => 'Doing'));
 
         if (!is_null($currentChallenge)) {
             return $this->redirect($this->generateUrl('showChallenge', array($uuid)));

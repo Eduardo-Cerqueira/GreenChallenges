@@ -4,7 +4,7 @@
 <table style="width:100%">
     {% for challenge in challenges %}
     <tr>
-        <td><a href="{{path('showChallenge', {uuid: challenge.uuid})}}">{{ challenge.title }}</a></td>
+        <td><a href="{{path('showChallenge', {uuid: challenge.uuid })}}">{{ challenge.title }}</a></td>
         <td>{{ challenge.description }}</td>
         {% if user != null %}
             {% if 'ROLE_ADMIN' in user.roles %}
