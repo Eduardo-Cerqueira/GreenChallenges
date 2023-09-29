@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div style="display: flex; flex-direction: column; align-items: center;">
+        <h1 style="margin-bottom: 20px;">Classement des utilisateurs</h1>
+        {% for key, user in topUsers %}
+            {% set backgroundColor = key == 0 ? '#ffd700' : (key == 1 ? '#c0c0c0' : (key == 2 ? '#cd7f32' : '#ffffff')) %}
+            <div style="margin: 5px 0; padding: 10px; border: 1px solid #ccc; border-radius: 5px; width: 300px; display: flex; justify-content: space-between; align-items: center; background-color: {{ backgroundColor }};">
+                <span style="font-weight: bold; margin-right: 10px;">#{{ key + 1 }}</span>
+                <span style="flex: 1; margin-right: 10px;">{{ user.userName }}</span>
+                <span style="color: black;">{{ user.totalPoints }} points</span>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
