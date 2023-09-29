@@ -34,6 +34,7 @@ class CSVCommand extends Command
         $this
             ->addArgument('csv_path', InputArgument::OPTIONAL, 'CSV Path')
             ->addArgument('admin_id', InputArgument::OPTIONAL, 'Admin ID')
+            ->addArgument('avoid_rows', InputArgument::OPTIONAL, 'Avoid Rows')
         ;
     }
 
@@ -42,6 +43,7 @@ class CSVCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $arg1 = $input->getArgument('csv_path');
         $arg2 = $input->getArgument('admin_id');
+        $arg3 = $input->getArgument('avoid_rows');
 
         if (!$arg1) {
             $io->error('CSV path was not given !');
@@ -53,6 +55,11 @@ class CSVCommand extends Command
             return Command::INVALID;
         }
 
+        if (!$arg3) {
+            $io->comment('The number of rows to avoid was not set !');
+            $arg3 = 0;
+        }
+
         if (!file_exists($arg1)) {
             $io->error('File does not exist !');
             return Command::INVALID;
@@ -62,20 +69,26 @@ class CSVCommand extends Command
             $em = $this->entityManager;
             $user = $em->getRepository(User::class)->findOneBy(array('id' => $arg2));
 
+            $row = 0;
             while (($data = fgetcsv($handle)) !== false) {
-                $challenge = new Challenge();
-                $challenge->setCreatedBy($user);
-                $challenge->setTitle($data[1]);
-                $challenge->setCategory($data[2]);
-                $challenge->setSubcategory($data[3]);
-                $challenge->setDescription($data[4]);
-                $challenge->setTips($data[5]);
-                $challenge->setStatus("Active");
-                $challenge->setPoints(random_int(10, 100));
-                //In seconds => between 7 days and 30 days
-                $challenge->setDuration(random_int(604800, 2592000));
+                if ($row > $arg3) {
+                    if (!empty($data[1])) {
+                        $challenge = new Challenge();
+                        $challenge->setCreatedBy($user);
+                        $challenge->setTitle($data[1]);
+                        $challenge->setCategory($data[2]);
+                        $challenge->setSubcategory($data[3]);
+                        $challenge->setDescription($data[4]);
+                        $challenge->setTips($data[5]);
+                        $challenge->setStatus("Active");
+                        $challenge->setPoints(random_int(10, 100));
+                        //In seconds => between 7 days and 30 days
+                        $challenge->setDuration(random_int(604800, 2592000));
 
-                $em->persist($challenge);
+                        $em->persist($challenge);
+                    }
+                }
+                $row++;
             }
             fclose($handle);
             $em->flush();
