@@ -30,7 +30,7 @@ class ProfileController extends AbstractController
         foreach($currentChallenges as $challenge){
             $newDate = $challenge->getCreatedAt()->add(new DateInterval('PT'.$challenge->getChallengeId()->getDuration().'S'));
             $isDone = date('m/d/Y h:i:s a', time()) >= $newDate->format('m/d/Y h:i:s a');
-            //dump(date('m/d/Y h:i:s a', time()), $newDate->format('m/d/Y h:i:s a'), $isDone);
+            
             if ($isDone and $challenge->getStatus() == 'Doing') {
                 $em = $this->getDoctrine()->getManager();
                 $challenge->setStatus('Timeout');
