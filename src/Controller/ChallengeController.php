@@ -81,8 +81,6 @@ class ChallengeController extends AbstractController
         $currentChallenge->setStatus('Doing');
         $currentChallenge->setPoints($challenge->getPoints());
 
-        $em = $this->getDoctrine()->getManager();
-
         $em->persist($currentChallenge);
         $em->flush();
 
