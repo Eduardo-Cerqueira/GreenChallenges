@@ -9,9 +9,10 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
 
+#[Route('/chart', name: 'chart')]
 class ChartjsController extends AbstractController
 {
-    #[Route('/chartjs', name: 'app_chart')]
+    #[Route('/challenge/status', name: 'app_chart')]
     public function index(ChartBuilderInterface $chartBuilder): Response
     {
         $em = $this->getDoctrine()->getManager();
@@ -45,7 +46,7 @@ class ChartjsController extends AbstractController
             ],
         ]);
 
-        return $this->render('chartjs.html.twig', [
+        return $this->render('chart/doughtnut.html.twig', [
             'chart' => $chart,
         ]);
     }
