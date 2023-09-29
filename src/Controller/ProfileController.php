@@ -39,16 +39,12 @@ class ProfileController extends AbstractController
             }
         }
 
-        $completedChallenges = $currentChallengeRepository->findBy(['user_uuid' => $user, 'status' => 'Completed']);
-        $total_points = 0;
-        foreach($completedChallenges as $challenge){
-            $total_points += $challenge->getPoints();
-        }
+        $total_points = $currentChallengeRepository->getSumPoints($user ,'Completed');
 
         return $this->render('profile/index.html.twig', [
             'user' => $user,
             'currentChallenges' => $currentChallenges,
-            'points' => $total_points
+            'points' => $total_points["total"]
         ]);
     }
 
